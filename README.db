@@ -12,3 +12,11 @@ Potential Windows Problem*
 - If error shown during step 3-4 with "long path support not enabled", run the following in powershell with admin
 New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
 -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+
+
+
+DATA SOURCES:
+PhishingEmailData.csv - https://github.com/TanusreeSharma/phishingdata-Analysis
+
+BACKUP DATA SOURCES:
+360 phishing email unprocessed - https://github.com/sadat1971/Phishing_Email/blob/main/Data/curated_set.csv
