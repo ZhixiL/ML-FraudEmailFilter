@@ -18,7 +18,11 @@ New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
 DATA SOURCES:
 PhishingEmailData.csv - https://github.com/TanusreeSharma/phishingdata-Analysis
 phishing_data_by_type.csv - https://www.kaggle.com/datasets/charlottehall/phishing-email-data-by-type?resource=download
-spam_ham_dataset.csv - https://www.kaggle.com/datasets/venky73/spam-mails-dataset
+spam_ham_dataset.csv - https://www.kaggle.com/datasets/venky73/spam-mails-dataset needs to be processed.
 
 BACKUP DATA SOURCES:
 360 phishing email unprocessed - https://github.com/sadat1971/Phishing_Email/blob/main/Data/curated_set.csv
+
+
+References:
+https://becominghuman.ai/spam-mail-detection-using-support-vector-machine-cdb57b0d62a8 (?)
