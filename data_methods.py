@@ -14,15 +14,6 @@ def filter_for_data(filename):
 def row_processer(row):
     return {"label": np.array(row[0], np.int32), "data": np.array(row[1:], dtype=np.float64)}
 
-# def build_datapipes(root_dir="./data/"):
-#     datapipe = dp.iter.FileLister(root_dir)
-#     datapipe = datapipe.filter(filter_fn=filter_for_data)
-#     datapipe = datapipe.open_files(mode='rt')
-#     datapipe = datapipe.parse_csv(delimiter=",", skip_lines=1)
-#     # Shuffle will happen as long as you do NOT set `shuffle=False` later in the DataLoader
-#     datapipe = datapipe.shuffle()
-#     datapipe = datapipe.map(row_processer)
-#     return datapipe
 def get_initdata(): #return title, text and label
     pdbyType = pd.read_csv("./data/phishing_data_by_type.csv", encoding = "ISO-8859-1")
     dataDict = defaultdict()
@@ -39,7 +30,8 @@ def get_initdata(): #return title, text and label
     dataDict["Type"] = Type
     return dataDict
 
-def obtainExtraData(nCount, cCount, pCount):       #obtain x amount of datasets from the available dataset, pcount = phishing count, ccount = commercial spam count, ncount = normal email count
+#obtain x amount of datasets from the available dataset, pcount = phishing count, ccount = commercial spam count, ncount = normal email count
+def obtainExtraData(nCount, cCount, pCount):
     pdbyType = pd.read_csv("./data/PhishingEmailData.csv", encoding = "ISO-8859-1")
     SpamHamDS = pd.read_csv("./data/spam_ham_dataset.csv", encoding = "ISO-8859-1")
     CEmailDS = pd.read_csv("./data/commercial email.csv", encoding = "ISO-8859-1")
@@ -48,20 +40,17 @@ def obtainExtraData(nCount, cCount, pCount):       #obtain x amount of datasets 
     SHText, SHLabel= list(SpamHamDS["text"]), list(SpamHamDS["label"])
     CommercialSubject, CommercialText = [], []
     SHSubject, SHMessage = [], []
-    
-    dataDict = defaultdict() 
 
-    for i in range(len(SHText)):            
+    # PREPROCESS DATA
+    # Split normal email into subject and text, while appending their type.
+    dataDict = defaultdict()
+    for i in range(len(SHText)):
         if SHLabel[i] == "ham":
             temp = SHText[i].split('\n')
             SHSubject.append(temp[0][8:])
             SHMessage.append(SHText[i][len(temp[0]):])
-
-    pos = random.sample(range(len(SHSubject)), nCount)
-    for i in pos:
-        SubjectList.append(SHSubject[i])
-        TextList.append(SHMessage[i])
-        TypeList.append(0)
+        
+    # Select pCount phishing emails (most len(PhishingSubject)), cCount commercial emails (most len(CommercialSubject))
     for i in range(len(CEmailDS["message"])):
         if CEmailDS["type"][i] == "0":
             temp = str(CEmailDS["message"][i]).split("\n")
@@ -71,11 +60,27 @@ def obtainExtraData(nCount, cCount, pCount):       #obtain x amount of datasets 
             temp = str(CEmailDS["message"][i]).split("\n")
             CommercialSubject.append(temp[0][8:])
             CommercialText.append(str(CEmailDS["message"][i])[len(temp[0]):])
+
+
+    # SELECT DATA
+    nCount, pCount, cCount = min(nCount, len(SHSubject)), min(pCount, len(PhishingSubject)), min(cCount, len(CommercialSubject))
+    print(f"We have at most {len(SHSubject)} type 0, {len(CommercialSubject)} type 1, {len(PhishingSubject)} type 2.")
+    
+    # Select nCount dataset (max len(SHSubject))
+    pos = random.sample(range(len(SHSubject)), nCount)
+    for i in pos:
+        SubjectList.append(SHSubject[i])
+        TextList.append(SHMessage[i])
+        TypeList.append(0)
+
+    # Randomize then add them to the list to the return lists
     pos = random.sample(range(len(PhishingSubject)), pCount)
     for i in pos:
         SubjectList.append(PhishingSubject[i])
         TextList.append(PhishingMessage[i])
         TypeList.append(2)
+
+    # Randomize commercial email to add to the list to return list
     pos = random.sample(range(len(CommercialSubject)), cCount)
     for i in pos:
         SubjectList.append(CommercialSubject[i])
