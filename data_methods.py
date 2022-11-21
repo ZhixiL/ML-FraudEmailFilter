@@ -2,10 +2,8 @@
 # https://pytorch.org/tutorials/beginner/basics/data_tutorial.html
 # https://pytorch.org/data/main/tutorial.html
 import numpy as np
-# import torchdata.datapipes as dp
 import pandas as pd
-import numpy as np
-from collections import defaultdict
+from collections import defaultdict, Counter
 import random
 import string
 
@@ -90,12 +88,14 @@ def obtainExtraData(nCount, cCount, pCount):
     dataDict["Text"] = TextList
     dataDict["Type"] = TypeList
     return dataDict
+
 def MessageProcessing(message):
     for i in range(len(message)):
         message[i] = message[i].lower().replace('\n', ' ').replace(':', ' ').replace(';', ' ').replace('"', ' ').replace(",", ' ').replace(".", ' ').replace("?",' ').replace("!", ' ').replace("-", ' ')
         message[i] = "".join(x for x in message[i] if x not in string.punctuation).lower()
         message[i] = " ".join(message[i].split())
     return message
+
 def getAllData():
     dataDict = defaultdict()
     Subject, Text, Type = [], [], []
@@ -103,7 +103,7 @@ def getAllData():
     Subject.extend(tempDict["Subject"])     #extend the data returned from get_initdata into its respective categories
     Text.extend(tempDict["Text"])
     Type.extend(tempDict["Type"])
-    tempDict2 = obtainExtraData(3672, 993, 693)      #3672 normal, 993 commercial, 693 phishing
+    tempDict2 = obtainExtraData(3672, 194, 693)      #3672 normal, 194 commercial, 693 phishing
     Subject.extend(tempDict2["Subject"])
     Text.extend(tempDict2["Text"])
     Type.extend(tempDict2["Type"])
@@ -119,10 +119,30 @@ def getAllData():
     random.shuffle(temp)
     res1, res2 = zip(*temp)
     MessageRes, TypeRes = list(res1), list(res2)
-    dataDict["Message"] = MessageRes
+    dataDict["Text"] = MessageRes
     dataDict["Type"] = TypeRes
-    print(TypeRes)
     return dataDict
-    
 
-getAllData()
+def overSampling(content, label):
+    newCont, newLab = [], []
+    finalItrs = []
+    maxDp = max(Counter(label).values())
+    dp = defaultdict(list)
+    for i, lab in enumerate(label):
+        dp[lab].append(i)
+    for key in dp.keys():
+        # this is the largest dataset case, we keep all the original data.
+        if len(dp[key]) == maxDp:
+            finalItrs += dp[key]
+            continue
+        # now we handle smaller dataset.
+        cur = []
+        while len(cur) < maxDp:
+            cur.append(dp[key][random.randrange(0, len(dp[key]))])
+        finalItrs += cur
+    # randomize itr list so we don't have distinct section of different labels.
+    random.shuffle(finalItrs)
+    for i in finalItrs:
+        newCont.append(content[i])
+        newLab.append(label[i])
+    return (newCont, newLab)

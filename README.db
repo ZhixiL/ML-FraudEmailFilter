@@ -3,6 +3,7 @@ Enviromental Setup:
 2. pip install --upgrade pip
 4. pip install matplotlib numpy scikit-learn
 5. pip install torch panda torchdata
+6. pip install nltk
 
 Side Requirement:
 In preparation to use PyTorch with GPU, download the following CUDA drive if you have GPU

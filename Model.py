@@ -2,27 +2,24 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression as LR
-from data_methods import get_initdata, obtainExtraData
+from data_methods import getAllData, overSampling
+from nlp import nlp
 
 if __name__ == '__main__':
-    data = get_initdata()
-    extraData = obtainExtraData(200, 200, 200)
-    for key in data:
-        data[key] += extraData[key]
-    title = data['Subject']
-    content = data['Text']
+    data = getAllData()
+    content = nlp(data['Text'])
+    # content = data['Text']
     label = data['Type']
-
-    # include label in the content
-    for i, t in enumerate(title):
-        content[i] = str(t) + "\n" + str(content[i])
-
-    cont_train, cont_test, lab_train, lab_test = train_test_split(content, label, test_size=0.2, random_state=1)
+    print("NLP processed complete")
+    
+    content, label = overSampling(content, label)
+    cont_train, cont_test, lab_train, lab_test = train_test_split(content, label, test_size=0.3, random_state=233)
     
     cv = CountVectorizer()
-    # transforming content to integer features
+    # Use CountVectorizer to obtain a vector of word counts.
     cont_train = cv.fit_transform(cont_train)
     cont_test = cv.transform(cont_test)
+    print("Count Vectorizer Complete")
     
     # SVC model fitting and scoring
     svcModel = SVC(kernel="rbf", random_state = 12)
