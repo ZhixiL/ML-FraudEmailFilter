@@ -1,13 +1,14 @@
-import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.svm import SVC
-from data_methods import get_initdata
+from sklearn.linear_model import LogisticRegression as LR
+from data_methods import get_initdata, obtainExtraData
 
 if __name__ == '__main__':
-    # print(dm.build_datapipes())
     data = get_initdata()
-    
+    extraData = obtainExtraData(200, 200, 200)
+    for key in data:
+        data[key] += extraData[key]
     title = data['Subject']
     content = data['Text']
     label = data['Type']
@@ -23,8 +24,12 @@ if __name__ == '__main__':
     cont_train = cv.fit_transform(cont_train)
     cont_test = cv.transform(cont_test)
     
-    model = SVC(kernel = "rbf", random_state = 12)
-    model.fit(cont_train, lab_train)
+    # SVC model fitting and scoring
+    svcModel = SVC(kernel="rbf", random_state = 12)
+    svcModel.fit(cont_train, lab_train)
+    print(f"SVM Score of the model is {svcModel.score(cont_test, lab_test)}")
     
-    print(model.score(cont_test, lab_test))
-    
+    # Simple Logistic Regression fitting and scoring
+    LRModel = LR(max_iter=10000)
+    LRModel.fit(cont_train, lab_train)
+    print(f"Logistic Regression score of the model is {LRModel.score(cont_test, lab_test)}")

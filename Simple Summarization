@@ -5,6 +5,8 @@
     one dataset that has 50% Fruad/Phishing, 25% Commercial Spam, 25% Normal email. But the total number of datapoints are still way too small,
     thus we have decided to use a spam/ham dataset and label Fraud/Phishing from Non-harmful Spam by ourselve. 
 
+
+2. 
     For the initial training, we started with using a simple SVM algorithm from SKlearn's SVC model. With that, we simply transform our email title
     and content to integers, then use that as input to fit the plot. However, as our datapoints are way too small, we're only getting an accuracy of 
-    approximately 55%.
+    approximately 55%. 
