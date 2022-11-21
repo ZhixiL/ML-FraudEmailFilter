@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from collections import defaultdict
 import random
+import string
 
 def filter_for_data(filename):
     return "sample_data" in filename and filename.endswith(".csv")
@@ -79,7 +80,6 @@ def obtainExtraData(nCount, cCount, pCount):
         SubjectList.append(PhishingSubject[i])
         TextList.append(PhishingMessage[i])
         TypeList.append(2)
-
     # Randomize commercial email to add to the list to return list
     pos = random.sample(range(len(CommercialSubject)), cCount)
     for i in pos:
@@ -90,3 +90,39 @@ def obtainExtraData(nCount, cCount, pCount):
     dataDict["Text"] = TextList
     dataDict["Type"] = TypeList
     return dataDict
+def MessageProcessing(message):
+    for i in range(len(message)):
+        message[i] = message[i].lower().replace('\n', ' ').replace(':', ' ').replace(';', ' ').replace('"', ' ').replace(",", ' ').replace(".", ' ').replace("?",' ').replace("!", ' ').replace("-", ' ')
+        message[i] = "".join(x for x in message[i] if x not in string.punctuation).lower()
+        message[i] = " ".join(message[i].split())
+    return message
+def getAllData():
+    dataDict = defaultdict()
+    Subject, Text, Type = [], [], []
+    tempDict = get_initdata()       #get the initial list from the phishing_data_by_type dataset
+    Subject.extend(tempDict["Subject"])     #extend the data returned from get_initdata into its respective categories
+    Text.extend(tempDict["Text"])
+    Type.extend(tempDict["Type"])
+    tempDict2 = obtainExtraData(3672, 993, 693)      #3672 normal, 993 commercial, 693 phishing
+    Subject.extend(tempDict2["Subject"])
+    Text.extend(tempDict2["Text"])
+    Type.extend(tempDict2["Type"])
+    Message = []
+    for i in range(len(Subject)):                   #some Subject were incorrect, this removes them
+        if type(Subject[i]) == float:
+            Subject[i] = ""
+    Subject = MessageProcessing(Subject)            #process the messages to make them lowercase and remove unnecessary things
+    Text = MessageProcessing(Text)
+    for i in range(len(Subject)):
+        Message.append(Subject[i] + " " + Text[i])          #combine Subject and Text into one list
+    temp = list(zip(Message, Type))                         #zip the two to shuffle later
+    random.shuffle(temp)
+    res1, res2 = zip(*temp)
+    MessageRes, TypeRes = list(res1), list(res2)
+    dataDict["Message"] = MessageRes
+    dataDict["Type"] = TypeRes
+    print(TypeRes)
+    return dataDict
+    
+
+getAllData()
