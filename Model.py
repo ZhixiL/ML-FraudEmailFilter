@@ -2,6 +2,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression as LR
+from sklearn.ensemble import RandomForestClassifier
 from data_methods import getAllData, overSampling
 from nlp import nlp
 
@@ -30,3 +31,8 @@ if __name__ == '__main__':
     LRModel = LR(max_iter=10000)
     LRModel.fit(cont_train, lab_train)
     print(f"Logistic Regression score of the model is {LRModel.score(cont_test, lab_test)}")
+
+    #Simple Random Forest 
+    RFModel = RandomForestClassifier(max_depth=2, random_state=0)
+    RFModel.fit(cont_train, lab_train)
+    print(f"Random Forest of the model is {RFModel.score(cont_test, lab_test)}")
