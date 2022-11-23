@@ -28,10 +28,10 @@ if __name__ == '__main__':
         FC.getAllData(args.useNLP)
     else:
         print("get partial")
-        
-    FC.split_vectorize()
+    
     if args.over_sampling:
         FC.overSampling()
+    FC.split_vectorize()
         
     if args.models == -1:
         runAll(FC)

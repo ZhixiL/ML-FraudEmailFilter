@@ -21,7 +21,7 @@ class FraudClassifier:
         print("Get All Data Complete")
     
     def overSampling(self):
-        self.content, self.label = overSampling(self.content, self.content)
+        self.content, self.label = overSampling(self.content, self.label)
         print("Oversampling Complete")
     
     def split_vectorize(self, testSize = 0.3, random = None):
