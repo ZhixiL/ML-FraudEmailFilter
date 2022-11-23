@@ -157,9 +157,6 @@ def overSampling(content, label):
 
 # NLP Section
 def Tokenize(string):
-    nltk.download('omw-1.4')
-    nltk.download('stopwords')
-    nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
     # Normalize
     normalized = re.sub(r"[^a-zA-Z0-9]", " ", string.lower().strip())
     # Tokenize the string into a list
@@ -173,6 +170,10 @@ def Tokenize(string):
 
 
 def nlp(contents):
+    # download necessary language packs for precision NLP
+    nltk.download('omw-1.4')
+    nltk.download('stopwords')
+    nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
     for i, text in enumerate(contents):
         contents[i] = Tokenize(text)
     return contents
