@@ -9,9 +9,6 @@ import string
 
 # NLP Text Processing libraries
 import nltk
-nltk.download('omw-1.4')
-nltk.download('stopwords')
-nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
@@ -69,7 +66,7 @@ def get_extradata(nCount, cCount, pCount):
 
     # SELECT DATA
     nCount, pCount, cCount = min(nCount, len(SHSubject)), min(pCount, len(PhishingSubject)), min(cCount, len(CommercialSubject))
-    print(f"We have at most {len(SHSubject)} type 0, {len(CommercialSubject)} type 1, {len(PhishingSubject)} type 2.")
+    # print(f"We have at most {len(SHSubject)} type 0, {len(CommercialSubject)} type 1, {len(PhishingSubject)} type 2.")
     
     # Select nCount dataset (max len(SHSubject))
     pos = random.sample(range(len(SHSubject)), nCount)
@@ -160,6 +157,9 @@ def overSampling(content, label):
 
 # NLP Section
 def Tokenize(string):
+    nltk.download('omw-1.4')
+    nltk.download('stopwords')
+    nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
     # Normalize
     normalized = re.sub(r"[^a-zA-Z0-9]", " ", string.lower().strip())
     # Tokenize the string into a list
