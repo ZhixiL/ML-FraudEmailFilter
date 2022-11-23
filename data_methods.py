@@ -7,13 +7,18 @@ from collections import defaultdict, Counter
 import random
 import string
 
-def filter_for_data(filename):
-    return "sample_data" in filename and filename.endswith(".csv")
+# NLP Text Processing libraries
+import nltk
+nltk.download('omw-1.4')
+nltk.download('stopwords')
+nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
+from nltk.corpus import stopwords
+from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+import re
 
-def row_processer(row):
-    return {"label": np.array(row[0], np.int32), "data": np.array(row[1:], dtype=np.float64)}
-
-def get_initdata(): #return title, text and label
+# Process and return dataset from phishing_data_by_type.csv only.
+def get_basedata():
     pdbyType = pd.read_csv("./data/phishing_data_by_type.csv", encoding = "ISO-8859-1")
     dataDict = defaultdict()
     dataDict["Subject"] = list(pdbyType["Subject"])
@@ -29,8 +34,9 @@ def get_initdata(): #return title, text and label
     dataDict["Type"] = Type
     return dataDict
 
-#obtain x amount of datasets from the available dataset, pcount = phishing count, ccount = commercial spam count, ncount = normal email count
-def obtainExtraData(nCount, cCount, pCount):
+#obtain x amount of datasets from the available dataset
+# pcount = phishing count, ccount = commercial spam count, ncount = normal email count
+def get_extradata(nCount, cCount, pCount):
     pdbyType = pd.read_csv("./data/PhishingEmailData.csv", encoding = "ISO-8859-1")
     SpamHamDS = pd.read_csv("./data/spam_ham_dataset.csv", encoding = "ISO-8859-1")
     CEmailDS = pd.read_csv("./data/commercial email.csv", encoding = "ISO-8859-1")
@@ -89,6 +95,7 @@ def obtainExtraData(nCount, cCount, pCount):
     dataDict["Type"] = TypeList
     return dataDict
 
+# Simplified efficient NLP method.
 def MessageProcessing(message):
     for i in range(len(message)):
         message[i] = message[i].lower().replace('\n', ' ').replace(':', ' ').replace(';', ' ').replace('"', ' ').replace(",", ' ').replace(".", ' ').replace("?",' ').replace("!", ' ').replace("-", ' ')
@@ -96,14 +103,17 @@ def MessageProcessing(message):
         message[i] = " ".join(message[i].split())
     return message
 
+# Obtain a list of all availiable datapoints
+# 4718 Rows of DP in total.
+# Type 0: 3711, Type 1: 234, Type 2: 773
 def getAllData():
     dataDict = defaultdict()
     Subject, Text, Type = [], [], []
-    tempDict = get_initdata()       #get the initial list from the phishing_data_by_type dataset
-    Subject.extend(tempDict["Subject"])     #extend the data returned from get_initdata into its respective categories
+    tempDict = get_basedata()       #get the initial list from the phishing_data_by_type dataset
+    Subject.extend(tempDict["Subject"])     #extend the data returned from get_basedata into its respective categories
     Text.extend(tempDict["Text"])
     Type.extend(tempDict["Type"])
-    tempDict2 = obtainExtraData(3672, 194, 693)      #3672 normal, 194 commercial, 693 phishing
+    tempDict2 = get_extradata(3672, 194, 693)      #3672 normal, 194 commercial, 693 phishing
     Subject.extend(tempDict2["Subject"])
     Text.extend(tempDict2["Text"])
     Type.extend(tempDict2["Type"])
@@ -123,6 +133,7 @@ def getAllData():
     dataDict["Type"] = TypeRes
     return dataDict
 
+# Expand smaller data class to obtain equal class dp count through random selection.
 def overSampling(content, label):
     newCont, newLab = [], []
     finalItrs = []
@@ -146,3 +157,22 @@ def overSampling(content, label):
         newCont.append(content[i])
         newLab.append(label[i])
     return (newCont, newLab)
+
+# NLP Section
+def Tokenize(string):
+    # Normalize
+    normalized = re.sub(r"[^a-zA-Z0-9]", " ", string.lower().strip())
+    # Tokenize the string into a list
+    words = word_tokenize(normalized)
+    # Remove stop words: if a token is a stop word, then remove it
+    words = [w for w in words if w not in stopwords.words("english")]
+    # Lemmatize and Stemming
+    lemmed_words = [WordNetLemmatizer().lemmatize(w) for w in words]
+    
+    return " ".join(lemmed_words)
+
+
+def nlp(contents):
+    for i, text in enumerate(contents):
+        contents[i] = Tokenize(text)
+    return contents

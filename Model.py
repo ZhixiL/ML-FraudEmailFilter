@@ -4,13 +4,12 @@ from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression as LR
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, ComplementNB, BernoulliNB
 from sklearn.ensemble import RandomForestClassifier
-from data_methods import getAllData, overSampling
-from nlp import nlp
+from data_methods import getAllData, overSampling, nlp
 
 if __name__ == '__main__':
     data = getAllData()
-    content = nlp(data['Text'])
-    # content = data['Text']
+    # content = nlp(data['Text'])
+    content = data['Text']
     label = data['Type']
     print("NLP processed complete")
     
