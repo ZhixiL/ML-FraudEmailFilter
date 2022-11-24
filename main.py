@@ -5,6 +5,7 @@ def runAll(FC, rand):
     FC.SVC_Score(rand)
     FC.LR_Score(rand)
     FC.RandForest_Score(rand)
+    FC.NaiveBayes_Score()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -50,4 +51,4 @@ if __name__ == '__main__':
             case 2:
                 FC.RandForest_Score(args.randomState)
             case 3:
-                print('add NB here')
+                FC.NaiveBayes_Score()
