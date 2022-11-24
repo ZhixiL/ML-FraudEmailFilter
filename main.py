@@ -10,11 +10,12 @@ def runAll(FC, rand):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--useNLP", required=False, default=False,
-        help="False by default, run complicate NLP instead of simple NLP (Extremely time consuming)"
+        "--NLP-Option", required=False, default=1, type=int,
+        help="0:No NLP at all, 1:Simplified NLP(Default), 2:Full NLP (Time Consuming)"
     )
     parser.add_argument(
-        "--testsize", required=False, default=0.3, help="0.3 by default."
+        "--testsize", required=False, default=0.3, type=float,
+        help="0.3 by default."
     )
     parser.add_argument(
         "--randomSplit", required=False, type=int, default=None,
@@ -25,7 +26,8 @@ if __name__ == '__main__':
         help="Disabled by default, take in seed for model's random state."
     )
     parser.add_argument(
-        "--over_sampling", required=False, default=0, help="0:All availiable data, 1:Base Only"
+        "--over_sampling", required=False, default=False, 
+        help="True to turn on over_sampling (False by default)"
     )
     parser.add_argument(
         "--models", required=True, type=int, help="-1:all models, 0:SVM, 1:LR, 2:RandForest, 3:Naive Bayes"
@@ -34,7 +36,7 @@ if __name__ == '__main__':
     
     FC = FraudClassifier()
     
-    FC.getAllData(args.useNLP)
+    FC.getAllData(args.NLP_Option)
     
     if args.over_sampling:
         FC.overSampling()

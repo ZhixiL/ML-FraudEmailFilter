@@ -13,12 +13,12 @@ class FraudClassifier:
         self.content = []
         self.label = []
     
-    def getAllData(self, nlpOp = False):
-        self.data = getAllData()
+    def getAllData(self, nlpOp = 1):
+        self.data = getAllData(nlpOp)
         self.content = self.data['Text']
-        if nlpOp:
+        if nlpOp == 2:
             self.content = nlp(self.content)
-            print("NLP Complete")
+            print("Complex NLP Complete")
         self.label = self.data['Type']
         print("Get All Data Complete")
     

@@ -103,7 +103,7 @@ def MessageProcessing(message):
 # Obtain a list of all availiable datapoints
 # 4718 Rows of DP in total.
 # Type 0: 3711, Type 1: 234, Type 2: 773
-def getAllData(mesgProc = False):
+def getAllData(nlpOp):
     dataDict = defaultdict()
     Subject, Text, Type = [], [], []
     tempDict = get_basedata()       #get the initial list from the phishing_data_by_type dataset
@@ -118,10 +118,10 @@ def getAllData(mesgProc = False):
     for i in range(len(Subject)):                   #some Subject were incorrect, this removes them
         if type(Subject[i]) == float:
             Subject[i] = ""
-    if mesgProc:
+    if nlpOp == 1:
         Subject = MessageProcessing(Subject)            #process the messages to make them lowercase and remove unnecessary things
         Text = MessageProcessing(Text)
-        print("Simplify NLP Completed")
+        print("Simplified NLP Completed")
     for i in range(len(Subject)):
         Message.append(Subject[i] + " " + Text[i])          #combine Subject and Text into one list
     temp = list(zip(Message, Type))                         #zip the two to shuffle later
