@@ -103,7 +103,7 @@ def MessageProcessing(message):
 # Obtain a list of all availiable datapoints
 # 4718 Rows of DP in total.
 # Type 0: 3711, Type 1: 234, Type 2: 773
-def getAllData():
+def getAllData(mesgProc = False):
     dataDict = defaultdict()
     Subject, Text, Type = [], [], []
     tempDict = get_basedata()       #get the initial list from the phishing_data_by_type dataset
@@ -118,8 +118,10 @@ def getAllData():
     for i in range(len(Subject)):                   #some Subject were incorrect, this removes them
         if type(Subject[i]) == float:
             Subject[i] = ""
-    Subject = MessageProcessing(Subject)            #process the messages to make them lowercase and remove unnecessary things
-    Text = MessageProcessing(Text)
+    if mesgProc:
+        Subject = MessageProcessing(Subject)            #process the messages to make them lowercase and remove unnecessary things
+        Text = MessageProcessing(Text)
+        print("Simplify NLP Completed")
     for i in range(len(Subject)):
         Message.append(Subject[i] + " " + Text[i])          #combine Subject and Text into one list
     temp = list(zip(Message, Type))                         #zip the two to shuffle later
@@ -157,6 +159,9 @@ def overSampling(content, label):
 
 # NLP Section
 def Tokenize(string):
+    nltk.download('omw-1.4')
+    nltk.download('stopwords')
+    nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
     # Normalize
     normalized = re.sub(r"[^a-zA-Z0-9]", " ", string.lower().strip())
     # Tokenize the string into a list
@@ -170,10 +175,6 @@ def Tokenize(string):
 
 
 def nlp(contents):
-    # download necessary language packs for precision NLP
-    nltk.download('omw-1.4')
-    nltk.download('stopwords')
-    nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
     for i, text in enumerate(contents):
         contents[i] = Tokenize(text)
     return contents
