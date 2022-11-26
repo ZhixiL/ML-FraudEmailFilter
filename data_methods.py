@@ -124,6 +124,9 @@ def getAllData(nlpOp):
         print("Simplified NLP Completed")
     for i in range(len(Subject)):
         Message.append(Subject[i] + " " + Text[i])          #combine Subject and Text into one list
+    if nlpOp == 2:
+        Message = nlp(Message)
+        print("Complex NLP Complete")
     temp = list(zip(Message, Type))                         #zip the two to shuffle later
     random.shuffle(temp)
     res1, res2 = zip(*temp)

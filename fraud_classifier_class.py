@@ -16,9 +16,6 @@ class FraudClassifier:
     def getAllData(self, nlpOp = 1):
         self.data = getAllData(nlpOp)
         self.content = self.data['Text']
-        if nlpOp == 2:
-            self.content = nlp(self.content)
-            print("Complex NLP Complete")
         self.label = self.data['Type']
         print("Get All Data Complete")
     
@@ -41,9 +38,11 @@ class FraudClassifier:
         svcModel = SVC(kernel="rbf", random_state = random)
         svcModel.fit(self.cont, self.lab)
         y_pred = svcModel.predict(self.cont_test)
+        acc = svcModel.score(self.cont_test, self.lab_test)
         score = f1_score(self.lab_test, y_pred, average='weighted')
-        print(f"SVM Score of the model is {svcModel.score(self.cont_test, self.lab_test)}")
+        print(f"SVM Score of the model is {acc}")
         print(f"SVM F1 score is {score}")
+        return (acc, score)
         
     # Simple Logistic Regression fitting and scoring
     def LR_Score(self, random = None):
@@ -51,9 +50,11 @@ class FraudClassifier:
         LRModel = LR(max_iter=10000, random_state = random)
         LRModel.fit(self.cont, self.lab)
         y_pred = LRModel.predict(self.cont_test)
+        acc = LRModel.score(self.cont_test, self.lab_test)
         score = f1_score(self.lab_test, y_pred, average='weighted')
-        print(f"Logistic Regression score of the model is {LRModel.score(self.cont_test, self.lab_test)}")
+        print(f"Logistic Regression score of the model is {acc}")
         print(f"Logistic Regression F1 score is {score}")
+        return (acc, score)
     
     # Random Forest Classifier
     def RandForest_Score(self, random = None):
@@ -61,39 +62,52 @@ class FraudClassifier:
         RFModel = RandomForestClassifier(random_state = random)
         RFModel.fit(self.cont, self.lab)
         y_pred = RFModel.predict(self.cont_test)
+        acc = RFModel.score(self.cont_test, self.lab_test)
         score = f1_score(self.lab_test, y_pred, average='weighted')
-        print(f"Random Forest of the model is {RFModel.score(self.cont_test, self.lab_test)}")
+        print(f"Random Forest of the model is {acc}")
         print(f"Random Forest F1 score is {score}")
+        return (acc, score)
     
     def NaiveBayes_Score(self):
+        scores = []
+        
         print("Gaussian Naive Bayes Started")
         gaussNB = GaussianNB()
         gaussNB.fit(self.cont.toarray(), self.lab)
         y_pred = gaussNB.predict(self.cont_test.toarray())
+        acc = gaussNB.score(self.cont_test.toarray(), self.lab_test)
         score = f1_score(self.lab_test, y_pred, average='weighted')
-        print(f"Gaussian Naive Bayes score of the model is {gaussNB.score(self.cont_test.toarray(), self.lab_test)}")
+        print(f"Gaussian Naive Bayes score of the model is {acc}")
         print(f"Gaussian NB F1 score is {score}")
-
+        scores.append((acc, score))
+        
         print("Multinomial Naive Bayes Started")
         multiNB = MultinomialNB()
         multiNB.fit(self.cont.toarray(), self.lab)
         y_pred = multiNB.predict(self.cont_test.toarray())
+        acc = multiNB.score(self.cont_test.toarray(), self.lab_test)
         score = f1_score(self.lab_test, y_pred, average = 'weighted')
-        print(f"Multinomial Naive Bayes score of the model is {multiNB.score(self.cont_test.toarray(), self.lab_test)}")
+        print(f"Multinomial Naive Bayes score of the model is {acc}")
         print(f"Multinomial NB F1 score is {score}")
-
+        scores.append((acc, score))
+        
         print("Complement Naive Bayes Started")
         compNB = ComplementNB()
         compNB.fit(self.cont.toarray(), self.lab)
         y_pred =  compNB.predict(self.cont_test.toarray())
+        acc = compNB.score(self.cont_test.toarray(), self.lab_test)
         score = f1_score(self.lab_test, y_pred, average = 'weighted')
-        print(f"Complement Naive Bayes score of the model is {compNB.score(self.cont_test.toarray(), self.lab_test)}")
+        print(f"Complement Naive Bayes score of the model is {acc}")
         print(f"Complement NB F1 score is {score}")
+        scores.append((acc, score))
         
         print("Bernoulli Naive Bayes Started")
         berNB = BernoulliNB()
         berNB.fit(self.cont.toarray(), self.lab)
         y_pred =  berNB.predict(self.cont_test.toarray())
+        acc = berNB.score(self.cont_test.toarray(), self.lab_test)
         score = f1_score(self.lab_test, y_pred, average = 'weighted')
-        print(f"Bernoulli Naive Bayes score of the model is {berNB.score(self.cont_test.toarray(), self.lab_test)}")
+        print(f"Bernoulli Naive Bayes score of the model is {acc}")
         print(f"Bernoulli NB F1 score is {score}")
+        scores.append((acc, score))
+        return scores
