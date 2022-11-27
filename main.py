@@ -38,19 +38,19 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         "--testsize", required=False, default=0.3, type=float,
-        help="0.3 by default."
+        help="Dictate the amount of data used for testing, 0.3 by default."
     )
     parser.add_argument(
         "--randomSplit", required=False, type=int, default=None,
-        help="Disabled by default, take in seed for random split between train and test."
+        help="None by default, take in seed for random split between train and test."
     )
     parser.add_argument(
         "--randomState", required=False, type=int, default=0,
-        help="Disabled by default, take in seed for model's random state."
+        help="None by default, take in seed for model's random state."
     )
     parser.add_argument(
         "--over_sampling", required=False, default=False, 
-        help="True to turn on over_sampling (False by default)"
+        help="False by default, true to turn on over_sampling"
     )
     parser.add_argument(
         "--models", required=True, type=int, help="-1:all models, 0:SVM, 1:LR, 2:RandForest, 3:Naive Bayes"

@@ -1,7 +1,6 @@
 # Pytorch Data Loader Tutorials
 # https://pytorch.org/tutorials/beginner/basics/data_tutorial.html
 # https://pytorch.org/data/main/tutorial.html
-import numpy as np
 import pandas as pd
 from collections import defaultdict, Counter
 import random
