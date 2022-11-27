@@ -160,6 +160,7 @@ def overSampling(content, label):
     return (newCont, newLab)
 
 # NLP Section
+# Start of code borrowed from [4]
 def Tokenize(string):
     # Normalize
     normalized = re.sub(r"[^a-zA-Z0-9]", " ", string.lower().strip())
@@ -171,7 +172,7 @@ def Tokenize(string):
     lemmed_words = [WordNetLemmatizer().lemmatize(w) for w in words]
     
     return " ".join(lemmed_words)
-
+# End of code borrowed from [4]
 
 def nlp(contents):
     nltk.download('omw-1.4')

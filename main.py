@@ -81,3 +81,4 @@ if __name__ == '__main__':
                 FC.RandForest_Score(args.randomState)
             case 3:
                 FC.NaiveBayes_Score()
+    print("Classification Complete")
